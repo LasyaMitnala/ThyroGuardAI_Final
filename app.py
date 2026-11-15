@@ -1,4 +1,6 @@
 
+from utils.navigation import render_sidebar
+
 import streamlit as st
 
 from database.db import initialize_database, get_dashboard_summary
@@ -25,75 +27,7 @@ initialize_database()
 # SIDEBAR NAVIGATION
 # --------------------------------------------------
 
-with st.sidebar:
-
-    st.markdown(
-        '<div class="brand">'
-        '<div class="brand-mark">T</div>'
-        '<div>'
-        '<div class="brand-name">ThyroGuard</div>'
-        '<div class="brand-sub">AI-POWERED THYROID HEALTH</div>'
-        '</div></div>',
-        unsafe_allow_html=True,
-    )
-
-    st.markdown("---")
-    st.markdown("**WORKSPACE**")
-
-    st.page_link(
-        "app.py",
-        label="Overview",
-        icon="🏠",
-    )
-
-    st.page_link(
-        "pages/ThyroAI.py",
-        label="ThyroAI",
-        icon="🧠",
-    )
-
-    st.page_link(
-        "pages/0_Patient_Management.py",
-        label="Patient Management",
-        icon="👤",
-    )
-
-    st.page_link(
-        "pages/1_ThyroidTrend.py",
-        label="ThyroidTrend",
-        icon="📈",
-    )
-
-    st.page_link(
-        "pages/2_SymptomWatch.py",
-        label="SymptomWatch",
-        icon="💗",
-    )
-
-    st.page_link(
-        "pages/3_FollowUpGuard.py",
-        label="FollowUpGuard",
-        icon="📅",
-    )
-
-    st.page_link(
-        "pages/5_Reports.py",
-        label="Reports",
-        icon="📋",
-    )
-
-    patient_sidebar()
-
-    st.markdown("---")
-
-    st.markdown(
-        '<div class="sidebar-note">'
-        'DEMO WORKSPACE<br>'
-        '<span>Fictional sample data only</span>'
-        '</div>',
-        unsafe_allow_html=True,
-    )
-
+render_sidebar()
 
 # --------------------------------------------------
 # MAIN DASHBOARD HEADER

@@ -1,4 +1,5 @@
 import streamlit as st
+from utils.navigation import render_sidebar
 from datetime import date
 from database.db import initialize_database, get_patients, create_patient, update_patient, archive_patient, get_patient
 from utils.ui import load_css, page_header
@@ -7,15 +8,7 @@ from utils.patient_context import patient_sidebar
 st.set_page_config(page_title="Patient Management | ThyroGuard", page_icon="🩺", layout="wide")
 load_css()
 initialize_database()
-with st.sidebar:
-    st.markdown("### ThyroGuard")
-    st.page_link("app.py", label="Overview")
-    st.page_link("pages/0_Patient_Management.py", label="Patient Management")
-    st.page_link("pages/1_ThyroidTrend.py", label="ThyroidTrend")
-    st.page_link("pages/2_SymptomWatch.py", label="SymptomWatch")
-    st.page_link("pages/3_FollowUpGuard.py", label="FollowUpGuard")
-    st.page_link("pages/5_Reports.py", label="Reports")
-patient_sidebar()
+render_sidebar()
 
 page_header("Patient management", "Create and maintain the patient profile shared across all ThyroGuard modules.")
 st.markdown('<div class="notice"><strong>Privacy note</strong> · Use fictional demonstration profiles only in this prototype. Do not enter real patient identifiers or sensitive health information.</div>', unsafe_allow_html=True)

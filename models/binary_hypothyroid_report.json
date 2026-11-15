@@ -1,0 +1,73 @@
+{
+    "dataset": "UCI allhypo",
+    "task": "Binary hypothyroid classification",
+    "features": [
+        "age",
+        "sex",
+        "on_thyroxine",
+        "query_on_thyroxine",
+        "on_antithyroid_medication",
+        "sick",
+        "pregnant",
+        "thyroid_surgery",
+        "i131_treatment",
+        "query_hypothyroid",
+        "query_hyperthyroid",
+        "lithium",
+        "goitre",
+        "tumor",
+        "hypopituitary",
+        "psych",
+        "tsh_measured",
+        "tsh",
+        "t3_measured",
+        "t3",
+        "tt4_measured",
+        "tt4",
+        "t4u_measured",
+        "t4u",
+        "fti_measured",
+        "fti",
+        "tbg_measured",
+        "referral_source"
+    ],
+    "validation": {
+        "accuracy": 1.0,
+        "balanced_accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "confusion_matrix": [
+            [
+                516,
+                0
+            ],
+            [
+                0,
+                44
+            ]
+        ]
+    },
+    "test": {
+        "accuracy": 0.9969135802469136,
+        "balanced_accuracy": 0.9983351831298557,
+        "precision": 0.9594594594594594,
+        "recall": 1.0,
+        "f1": 0.9793103448275862,
+        "confusion_matrix": [
+            [
+                898,
+                3
+            ],
+            [
+                0,
+                71
+            ]
+        ]
+    },
+    "limitations": [
+        "Historical research dataset",
+        "Not clinically validated",
+        "Not a medical diagnosis"
+    ]
+}

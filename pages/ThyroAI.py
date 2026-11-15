@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
+from utils.navigation import render_sidebar
 from datetime import datetime, timezone
+
 
 from utils.ui import load_css, page_header
 from utils.patient_context import patient_sidebar
@@ -18,16 +20,7 @@ st.set_page_config(
 
 load_css()
 
-with st.sidebar:
-    st.markdown("**WORKSPACE**")
-    st.page_link("app.py", label="Overview")
-    st.page_link("pages/0_Patient_Management.py", label="Patient Management")
-    st.page_link("pages/ThyroAI.py", label="ThyroAI")
-    st.page_link("pages/1_ThyroidTrend.py", label="ThyroidTrend")
-    st.page_link("pages/2_SymptomWatch.py", label="SymptomWatch")
-    st.page_link("pages/3_FollowUpGuard.py", label="FollowUpGuard")
-    st.page_link("pages/5_Reports.py", label="Reports")
-    active_patient_id = patient_sidebar()
+render_sidebar()
 
 page_header(
     "ThyroAI",
@@ -52,9 +45,9 @@ st.markdown(
 with st.expander("What is being classified?", expanded=True):
     st.markdown(
         """
-        - **Class 1:** Normal / not hypothyroid
-        - **Class 2:** Hyperfunction
-        - **Class 3:** Subnormal functioning
+        - **Class 1:** Normal / Not hypothyroid
+        - **Class 2:** Hyperthyroid
+        - **Class 3:** Hypothyroid
 
         These are the dataset's original categories. They are research labels,
         not a personal medical diagnosis.
@@ -82,46 +75,54 @@ with st.form("thyroai_assessment_form"):
     c1, c2 = st.columns(2)
     with c1:
         age_scaled = st.number_input(
-            "Age (dataset scale)", min_value=0.0, max_value=1.0,
+            "Age (Divide your age by 100, e.g., 30 years = 0.30)", min_value=0.0, max_value=1.0,
             value=0.50, step=0.01,
             help="The ANN dataset stores age on a scaled 0–1-like range. Do not enter age in years here."
         )
     with c2:
         sex = st.selectbox(
-            "Sex code",
+            "Sex/Gender",
             options=[0, 1],
-            format_func=lambda x: "0 — Male (dataset encoding)" if x == 0 else "1 — Female (dataset encoding)",
+            format_func=lambda x: "0 — Male" if x == 0 else "1 — Female",
         )
 
-    st.markdown("#### 2. Binary clinical-history indicators")
-    st.caption("Choose Yes or No only when the information is known. These fields are dataset indicators, not medical advice.")
-    binary_labels = [
-        ("on_thyroxine", "Currently on thyroxine?"),
-        ("query_on_thyroxine", "Query on thyroxine?"),
-        ("on_antithyroid_medication", "On antithyroid medication?"),
-        ("sick", "Recorded as sick in the source record?"),
-        ("pregnant", "Pregnant?"),
-        ("thyroid_surgery", "History of thyroid surgery?"),
-        ("i131_treatment", "History of I-131 treatment?"),
-        ("query_hypothyroid", "Query hypothyroidism?"),
-        ("query_hyperthyroid", "Query hyperthyroidism?"),
-        ("lithium", "Lithium recorded?"),
-        ("goitre", "Goitre recorded?"),
-        ("tumor", "Tumor recorded?"),
-        ("hypopituitary", "Hypopituitary recorded?"),
-        ("psych", "Psych condition indicator recorded?"),
-    ]
-    binary_values = []
-    cols = st.columns(2)
-    for i, (key, label) in enumerate(binary_labels):
-        with cols[i % 2]:
-            val = st.selectbox(
-                label,
-                options=[0, 1],
-                format_func=lambda x: "No (0)" if x == 0 else "Yes (1)",
-                key=f"thyroai_{key}",
-            )
-            binary_values.append(int(val))
+st.markdown("#### 2. Your medical history")
+st.caption(
+    "Answer the following questions based on your medical history. "
+    "Your responses help ThyroAI analyze patterns in your health information."
+)
+    
+binary_labels = [
+    ("on_thyroxine", "Are you currently taking thyroid hormone medication?"),
+    ("query_on_thyroxine", "Has a healthcare provider discussed starting thyroid hormone medication with you?"),
+    ("on_antithyroid_medication", "Are you currently taking medication to reduce thyroid hormone production?"),
+    ("sick", "Were you experiencing an illness when your laboratory tests were taken?"),
+    ("pregnant", "Are you currently pregnant?"),
+    ("thyroid_surgery", "Have you previously had thyroid surgery?"),
+    ("i131_treatment", "Have you received radioactive iodine treatment for a thyroid condition?"),
+    ("query_hypothyroid", "Has a healthcare provider raised concerns about an underactive thyroid?"),
+    ("query_hyperthyroid", "Has a healthcare provider raised concerns about an overactive thyroid?"),
+    ("lithium", "Are you currently taking lithium medication?"),
+    ("goitre", "Have you been diagnosed with an enlarged thyroid (goiter)?"),
+    ("tumor", "Have you been diagnosed with a thyroid tumor?"),
+    ("hypopituitary", "Have you been diagnosed with reduced pituitary gland function?"),
+    ("psych", "Do you have a history of a mental health condition?")
+]
+
+binary_values = []
+cols = st.columns(2)
+
+for i, (key, label) in enumerate(binary_labels):
+    with cols[i % 2]:
+        val = st.selectbox(
+            label,
+            options=[0, 1],
+            format_func=lambda x: "No" if x == 0 else "Yes",
+            key=f"thyroai_{key}",
+        )
+        binary_values.append(int(val))
+         
+
 
     st.markdown("#### 3. Laboratory features")
     st.info(

@@ -4,6 +4,7 @@ from pathlib import Path
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+from utils.navigation import render_sidebar
 from datetime import date
 from database.db import (
     initialize_database, get_lab_entries, add_lab_entry, delete_lab_entry
@@ -15,16 +16,8 @@ st.set_page_config(page_title="ThyroidTrend | ThyroGuard", page_icon="🩺", lay
 load_css()
 initialize_database()
 
-with st.sidebar:
-    st.markdown("### ThyroGuard")
-    st.page_link("app.py", label="Overview")
-    st.page_link("pages/0_Patient_Management.py", label="Patient Management")
-    st.page_link("pages/1_ThyroidTrend.py", label="ThyroidTrend")
-    st.page_link("pages/2_SymptomWatch.py", label="SymptomWatch")
-    st.page_link("pages/3_FollowUpGuard.py", label="FollowUpGuard")
-    st.page_link("pages/5_Reports.py", label="Reports")
+render_sidebar()
 
-patient_sidebar()
 patient_id = selected_patient_id()
 page_header(
     "ThyroidTrend",

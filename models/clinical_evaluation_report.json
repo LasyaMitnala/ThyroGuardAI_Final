@@ -1,0 +1,246 @@
+{
+    "dataset": "UCI allhypo",
+    "selected_model": "Random Forest",
+    "features": [
+        "age",
+        "sex",
+        "on_thyroxine",
+        "query_on_thyroxine",
+        "on_antithyroid_medication",
+        "sick",
+        "pregnant",
+        "thyroid_surgery",
+        "i131_treatment",
+        "query_hypothyroid",
+        "query_hyperthyroid",
+        "lithium",
+        "goitre",
+        "tumor",
+        "hypopituitary",
+        "psych",
+        "tsh_measured",
+        "tsh",
+        "t3_measured",
+        "t3",
+        "tt4_measured",
+        "tt4",
+        "t4u_measured",
+        "t4u",
+        "fti_measured",
+        "fti",
+        "tbg_measured",
+        "tbg",
+        "referral_source"
+    ],
+    "classes": [
+        "compensated hypothyroid",
+        "negative",
+        "primary hypothyroid",
+        "secondary hypothyroid"
+    ],
+    "validation_results": {
+        "Random Forest": {
+            "accuracy": 0.9946428571428572,
+            "balanced_accuracy": 0.9730669846948917,
+            "macro_f1": 0.9632950585013692,
+            "classification_report": {
+                "compensated hypothyroid": {
+                    "precision": 0.9393939393939394,
+                    "recall": 1.0,
+                    "f1-score": 0.96875,
+                    "support": 31.0
+                },
+                "negative": {
+                    "precision": 1.0,
+                    "recall": 0.9961240310077519,
+                    "f1-score": 0.9980582524271845,
+                    "support": 516.0
+                },
+                "primary hypothyroid": {
+                    "precision": 0.9230769230769231,
+                    "recall": 0.9230769230769231,
+                    "f1-score": 0.9230769230769231,
+                    "support": 13.0
+                },
+                "accuracy": 0.9946428571428572,
+                "macro avg": {
+                    "precision": 0.9541569541569542,
+                    "recall": 0.9730669846948917,
+                    "f1-score": 0.9632950585013692,
+                    "support": 560.0
+                },
+                "weighted avg": {
+                    "precision": 0.9948593073593074,
+                    "recall": 0.9946428571428572,
+                    "f1-score": 0.9946951933079057,
+                    "support": 560.0
+                }
+            },
+            "confusion_matrix": [
+                [
+                    31,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    1,
+                    514,
+                    1,
+                    0
+                ],
+                [
+                    1,
+                    0,
+                    12,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    0,
+                    0
+                ]
+            ]
+        },
+        "Logistic Regression": {
+            "accuracy": 0.9553571428571429,
+            "balanced_accuracy": 0.9386417117099789,
+            "macro_f1": 0.6512140033879165,
+            "classification_report": {
+                "compensated hypothyroid": {
+                    "precision": 0.7435897435897436,
+                    "recall": 0.9354838709677419,
+                    "f1-score": 0.8285714285714286,
+                    "support": 31.0
+                },
+                "negative": {
+                    "precision": 0.9959677419354839,
+                    "recall": 0.9573643410852714,
+                    "f1-score": 0.9762845849802372,
+                    "support": 516.0
+                },
+                "primary hypothyroid": {
+                    "precision": 0.7058823529411765,
+                    "recall": 0.9230769230769231,
+                    "f1-score": 0.8,
+                    "support": 13.0
+                },
+                "secondary hypothyroid": {
+                    "precision": 0.0,
+                    "recall": 0.0,
+                    "f1-score": 0.0,
+                    "support": 0.0
+                },
+                "accuracy": 0.9553571428571429,
+                "macro avg": {
+                    "precision": 0.6113599596166011,
+                    "recall": 0.7039812837824841,
+                    "f1-score": 0.6512140033879165,
+                    "support": 560.0
+                },
+                "weighted avg": {
+                    "precision": 0.9752626919254054,
+                    "recall": 0.9553571428571429,
+                    "f1-score": 0.9640152859562797,
+                    "support": 560.0
+                }
+            },
+            "confusion_matrix": [
+                [
+                    29,
+                    2,
+                    0,
+                    0
+                ],
+                [
+                    10,
+                    494,
+                    5,
+                    7
+                ],
+                [
+                    0,
+                    0,
+                    12,
+                    1
+                ],
+                [
+                    0,
+                    0,
+                    0,
+                    0
+                ]
+            ]
+        }
+    },
+    "test_results": {
+        "accuracy": 0.9917695473251029,
+        "balanced_accuracy": 0.9970403255641879,
+        "macro_f1": 0.9664026350683023,
+        "classification_report": {
+            "compensated hypothyroid": {
+                "precision": 0.851063829787234,
+                "recall": 1.0,
+                "f1-score": 0.9195402298850575,
+                "support": 40.0
+            },
+            "negative": {
+                "precision": 1.0,
+                "recall": 0.9911209766925638,
+                "f1-score": 0.9955406911928651,
+                "support": 901.0
+            },
+            "primary hypothyroid": {
+                "precision": 0.96875,
+                "recall": 1.0,
+                "f1-score": 0.9841269841269841,
+                "support": 31.0
+            },
+            "accuracy": 0.9917695473251029,
+            "macro avg": {
+                "precision": 0.9399379432624113,
+                "recall": 0.9970403255641879,
+                "f1-score": 0.9664026350683023,
+                "support": 972.0
+            },
+            "weighted avg": {
+                "precision": 0.9928742831188162,
+                "recall": 0.9917695473251029,
+                "f1-score": 0.9920490827861217,
+                "support": 972.0
+            }
+        },
+        "confusion_matrix": [
+            [
+                40,
+                0,
+                0,
+                0
+            ],
+            [
+                7,
+                893,
+                1,
+                0
+            ],
+            [
+                0,
+                0,
+                31,
+                0
+            ],
+            [
+                0,
+                0,
+                0,
+                0
+            ]
+        ]
+    },
+    "limitations": [
+        "Historical research dataset",
+        "Not clinically validated",
+        "Not a medical diagnosis"
+    ]
+}

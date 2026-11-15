@@ -1,9 +1,30 @@
-__pycache__/
-*.py[cod]
+# Python
 .venv/
 venv/
-.env
-.streamlit/secrets.toml
-database/*.db
-.DS_Store
+__pycache__/
+*.pyc
 .pytest_cache/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+
+# macOS
+.DS_Store
+
+# Local databases and private data
+data/*.db
+data/*.db-*
+data/private/
+
+# Raw datasets
+data/raw/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Local databases
+database/*.db
+database/*.db-*

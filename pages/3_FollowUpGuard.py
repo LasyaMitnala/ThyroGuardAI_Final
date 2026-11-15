@@ -1,20 +1,16 @@
 import streamlit as st
 import pandas as pd
 from datetime import date
+from utils.navigation import render_sidebar
 from database.db import initialize_database, get_followups
 from utils.ui import load_css, page_header
 from utils.patient_context import patient_sidebar, selected_patient_id
 st.set_page_config(page_title="FollowUpGuard | ThyroGuard", page_icon="🩺", layout="wide")
 load_css(); initialize_database()
-with st.sidebar:
-    st.markdown("### ThyroGuard")
-    st.page_link("app.py", label="Overview")
-    st.page_link("pages/0_Patient_Management.py", label="Patient Management")
-    st.page_link("pages/1_ThyroidTrend.py", label="ThyroidTrend")
-    st.page_link("pages/2_SymptomWatch.py", label="SymptomWatch")
-    st.page_link("pages/3_FollowUpGuard.py", label="FollowUpGuard")
-    st.page_link("pages/5_Reports.py", label="Reports")
-patient_sidebar()
+
+render_sidebar()
+
+
 active_patient_id = selected_patient_id() or 1
 page_header("FollowUpGuard", "Keep clinician-recommended monitoring dates visible.")
 rows = get_followups(active_patient_id)

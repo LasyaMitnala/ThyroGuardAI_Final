@@ -1,6 +1,7 @@
 
 import streamlit as st
 import pandas as pd
+from utils.navigation import render_sidebar
 import plotly.express as px
 import numpy as np
 
@@ -32,16 +33,7 @@ st.set_page_config(
 load_css()
 initialize_database()
 
-with st.sidebar:
-    st.markdown("### ThyroGuard")
-    st.page_link("app.py", label="Overview")
-    st.page_link("pages/0_Patient_Management.py", label="Patient Management")
-    st.page_link("pages/1_ThyroidTrend.py", label="ThyroidTrend")
-    st.page_link("pages/2_SymptomWatch.py", label="SymptomWatch")
-    st.page_link("pages/3_FollowUpGuard.py", label="FollowUpGuard")
-    st.page_link("pages/5_Reports.py", label="Reports")
-
-patient_sidebar()
+render_sidebar()
 
 patient_id = selected_patient_id()
 
