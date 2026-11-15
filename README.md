@@ -1,67 +1,41 @@
-# ThyroGuard — Phase 1 foundation
-
-A local Streamlit prototype for thyroid monitoring and risk-awareness workflows.
-
-## Requirements
-- Python 3.10 or newer
-- VS Code
-- Git (recommended)
-
-## Setup (macOS)
-```bash
-cd thyroguard
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-streamlit run app.py
-```
-
 Open http://localhost:8501 if the browser does not open automatically.
 
-## Phase 1 includes
-- Premium clinical visual shell and navigation
-- Four module pages plus reports page
-- Local SQLite database and fictional demo records
-- Basic trend visualizations
-- Shared data access layer
+# ThyroGaurd
 
-## Safety and scope
-This is an educational prototype using fictional data. It is not validated for clinical use and does not diagnose, predict medical outcomes, or recommend treatment. Do not enter identifiable patient data.
+** Track: Health
+** Team: Pahal Vyas, Lasya Mitnala, Devarshita Karanam
 
-## Git
-```bash
-git init
-git add .
-git commit -m "Build ThyroGuard Phase 1 foundation"
-```
+## The Problem
+Thyroid disorders, including hypothyroidism and hyperthyroidism, can cause symptoms such as fatigue, mood changes, and difficulty concentrating, which often overlap with other health conditions. Patients may struggle to understand their thyroid laboratory results, recognize changes in their health, and organize information for medical appointments. ThyroGuard aims to make thyroid health information more accessible through AI-powered analysis and personalized tracking.
 
-The SQLite database is excluded from Git by `.gitignore`.
+## What we Built
+ThyroGuard is an AI-powered thyroid health management application that combines machine learning with patient-friendly health monitoring tools. Users can enter thyroid laboratory measurements, record symptoms, and track their health over time. The application is designed to use a trained machine-learning classifier to identify thyroid-function patterns, including normal, hypothyroid, and hyperthyroid patterns, while providing visualizations that help users understand their results.
 
+## What we added:
+We developed ThyroGuard to go beyond traditional disease classification by combining AI-based thyroid analysis with longitudinal health tracking. Our approach integrates laboratory measurements, symptom monitoring, and explainable machine learning into one accessible application, allowing users to explore their thyroid health rather than receiving only a single prediction.
 
-## Phase 2 — Patient Management
-- Create, edit, and archive local patient profiles.
-- Switch active patient from the sidebar.
-- Existing demo records remain associated with Demo Patient A.
-- Existing databases are migrated automatically when the app starts.
+## How it works
+Data: We selected the UCI Thyroid Disease dataset, specifically the new-thyroid.data subset containing 215 observations and five laboratory measurements. The dataset includes three thyroid-function categories: normal, hyperthyroid, and hypothyroid. Our planned preprocessing involves checking missing values, separating input features from class labels, and using a stratified training/test split.
 
-Use fictional profiles only. Do not enter identifiable or real patient health data.
+Model: We use a Random Forest classifier implemented with Python and scikit-learn. Random Forest was selected because it can capture nonlinear relationships between thyroid measurements, handle multiple input features, and provide global feature-importance estimates. The model is designed to classify laboratory patterns using measurements such as T3, T4, and TSH-related values. We evaluate its performance using balanced accuracy, macro-F1, and a confusion matrix.
 
+## Results
 
-## ThyroidTrend — Functional laboratory workflow
-- Add TSH, FT4 and FT3 panels for the selected patient.
-- Store each panel and the report-specific reference intervals in SQLite.
-- Compare the latest panel with its entered intervals.
-- Visualize longitudinal measurements and compare consecutive panels.
-- Review and remove incorrectly entered records.
-- The current analytical summaries are transparent calculations, not a trained diagnostic AI model.
+## What we'd do next
+With more time, we would expand ThyroGuard by training models on larger and more diverse clinical datasets, improving prediction calibration, and incorporating explainable AI techniques such as SHAP to clarify individual predictions. We would also explore longitudinal datasets to develop models capable of identifying changes in thyroid health over time and evaluate the system with clinical experts before considering real-world use.
 
+## Sources
 
-## SymptomWatch — Functional symptom workflow
-- Record patient-reported energy, fatigue, concentration, memory and sleep ratings.
-- Save dated check-ins to the selected patient's SQLite record.
-- Compare selected symptom dimensions over time.
-- Review latest ratings and transparent changes since the previous check-in.
-- Review whether symptom and laboratory records share dates, without implying causation.
-- Remove incorrectly entered check-ins.
-- AI pattern recognition is planned for a later, separately validated integration stage.
+UCI Machine Learning Repository — Thyroid Disease Dataset: https://archive.ics.uci.edu/dataset/102/thyroid+disease
+
+Scikit-learn — Random Forest Classifier: https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html
+
+Streamlit — Application Framework: https://streamlit.io/
+
+Pandas — Data Processing: https://pandas.pydata.org/
+
+Plotly — Interactive Data Visualization: https://plotly.com/python/
+
+GitHub — ThyroGuard Repository: https://github.com/alpaca822/ThyroGuard
+
+AI development assistance: OpenAI ChatGPT, used for coding guidance, debugging, and project documentation.
