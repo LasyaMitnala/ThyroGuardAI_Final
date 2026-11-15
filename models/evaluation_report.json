@@ -1,0 +1,296 @@
+{
+    "dataset": "UCI ANN Thyroid Disease",
+    "training_file": "ann-train.data",
+    "test_file": "ann-test.data",
+    "training_rows": 3772,
+    "validation_rows": 755,
+    "official_test_rows": 3428,
+    "feature_count": 21,
+    "class_labels": [
+        1,
+        2,
+        3
+    ],
+    "class_label_interpretation": "Original numeric labels retained. Clinical mapping requires verification.",
+    "selected_model": "Random Forest",
+    "selection_metric": "validation_macro_f1",
+    "validation_comparison": {
+        "Random Forest": {
+            "accuracy": 0.9933774834437086,
+            "balanced_accuracy": 0.9976122254059216,
+            "macro_f1": 0.9735881460180525,
+            "confusion_matrix": [
+                [
+                    19,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    38,
+                    0
+                ],
+                [
+                    1,
+                    4,
+                    693
+                ]
+            ],
+            "class_metrics": {
+                "1": {
+                    "true_positives": 19,
+                    "false_negatives": 0,
+                    "false_positives": 1,
+                    "true_negatives": 735,
+                    "precision": 0.95,
+                    "sensitivity_recall": 1.0,
+                    "specificity": 0.998641304347826,
+                    "f1": 0.9743589743589743,
+                    "support": 19
+                },
+                "2": {
+                    "true_positives": 38,
+                    "false_negatives": 0,
+                    "false_positives": 4,
+                    "true_negatives": 713,
+                    "precision": 0.9047619047619048,
+                    "sensitivity_recall": 1.0,
+                    "specificity": 0.9944211994421199,
+                    "f1": 0.95,
+                    "support": 38
+                },
+                "3": {
+                    "true_positives": 693,
+                    "false_negatives": 5,
+                    "false_positives": 0,
+                    "true_negatives": 57,
+                    "precision": 1.0,
+                    "sensitivity_recall": 0.9928366762177651,
+                    "specificity": 1.0,
+                    "f1": 0.9964054636951833,
+                    "support": 698
+                }
+            },
+            "classification_report": {
+                "1": {
+                    "precision": 0.95,
+                    "recall": 1.0,
+                    "f1-score": 0.9743589743589743,
+                    "support": 19.0
+                },
+                "2": {
+                    "precision": 0.9047619047619048,
+                    "recall": 1.0,
+                    "f1-score": 0.95,
+                    "support": 38.0
+                },
+                "3": {
+                    "precision": 1.0,
+                    "recall": 0.9928366762177651,
+                    "f1-score": 0.9964054636951833,
+                    "support": 698.0
+                },
+                "accuracy": 0.9933774834437086,
+                "macro avg": {
+                    "precision": 0.9515873015873016,
+                    "recall": 0.9976122254059216,
+                    "f1-score": 0.9735881460180525,
+                    "support": 755.0
+                },
+                "weighted avg": {
+                    "precision": 0.9939482812992747,
+                    "recall": 0.9933774834437086,
+                    "f1-score": 0.9935150121484218,
+                    "support": 755.0
+                }
+            }
+        },
+        "Logistic Regression": {
+            "accuracy": 0.9748344370860927,
+            "balanced_accuracy": 0.9655657769064495,
+            "macro_f1": 0.9030595813204508,
+            "confusion_matrix": [
+                [
+                    18,
+                    1,
+                    0
+                ],
+                [
+                    0,
+                    37,
+                    1
+                ],
+                [
+                    3,
+                    14,
+                    681
+                ]
+            ],
+            "class_metrics": {
+                "1": {
+                    "true_positives": 18,
+                    "false_negatives": 1,
+                    "false_positives": 3,
+                    "true_negatives": 733,
+                    "precision": 0.8571428571428571,
+                    "sensitivity_recall": 0.9473684210526315,
+                    "specificity": 0.9959239130434783,
+                    "f1": 0.9,
+                    "support": 19
+                },
+                "2": {
+                    "true_positives": 37,
+                    "false_negatives": 1,
+                    "false_positives": 15,
+                    "true_negatives": 702,
+                    "precision": 0.7115384615384616,
+                    "sensitivity_recall": 0.9736842105263158,
+                    "specificity": 0.9790794979079498,
+                    "f1": 0.8222222222222222,
+                    "support": 38
+                },
+                "3": {
+                    "true_positives": 681,
+                    "false_negatives": 17,
+                    "false_positives": 1,
+                    "true_negatives": 56,
+                    "precision": 0.998533724340176,
+                    "sensitivity_recall": 0.9756446991404012,
+                    "specificity": 0.9824561403508771,
+                    "f1": 0.9869565217391304,
+                    "support": 698
+                }
+            },
+            "classification_report": {
+                "1": {
+                    "precision": 0.8571428571428571,
+                    "recall": 0.9473684210526315,
+                    "f1-score": 0.9,
+                    "support": 19.0
+                },
+                "2": {
+                    "precision": 0.7115384615384616,
+                    "recall": 0.9736842105263158,
+                    "f1-score": 0.8222222222222222,
+                    "support": 38.0
+                },
+                "3": {
+                    "precision": 0.998533724340176,
+                    "recall": 0.9756446991404012,
+                    "f1-score": 0.9869565217391304,
+                    "support": 698.0
+                },
+                "accuracy": 0.9748344370860927,
+                "macro avg": {
+                    "precision": 0.8557383476738316,
+                    "recall": 0.9655657769064495,
+                    "f1-score": 0.9030595813204508,
+                    "support": 755.0
+                },
+                "weighted avg": {
+                    "precision": 0.9805307488922103,
+                    "recall": 0.9748344370860927,
+                    "f1-score": 0.9764769491633873,
+                    "support": 755.0
+                }
+            }
+        }
+    },
+    "official_test_evaluation": {
+        "accuracy": 0.9909568261376897,
+        "balanced_accuracy": 0.9967484791273337,
+        "macro_f1": 0.957186394710952,
+        "confusion_matrix": [
+            [
+                73,
+                0,
+                0
+            ],
+            [
+                0,
+                177,
+                0
+            ],
+            [
+                11,
+                20,
+                3147
+            ]
+        ],
+        "class_metrics": {
+            "1": {
+                "true_positives": 73,
+                "false_negatives": 0,
+                "false_positives": 11,
+                "true_negatives": 3344,
+                "precision": 0.8690476190476191,
+                "sensitivity_recall": 1.0,
+                "specificity": 0.9967213114754099,
+                "f1": 0.9299363057324841,
+                "support": 73
+            },
+            "2": {
+                "true_positives": 177,
+                "false_negatives": 0,
+                "false_positives": 20,
+                "true_negatives": 3231,
+                "precision": 0.8984771573604061,
+                "sensitivity_recall": 1.0,
+                "specificity": 0.9938480467548446,
+                "f1": 0.946524064171123,
+                "support": 177
+            },
+            "3": {
+                "true_positives": 3147,
+                "false_negatives": 31,
+                "false_positives": 0,
+                "true_negatives": 250,
+                "precision": 1.0,
+                "sensitivity_recall": 0.9902454373820012,
+                "specificity": 1.0,
+                "f1": 0.9950988142292491,
+                "support": 3178
+            }
+        },
+        "classification_report": {
+            "1": {
+                "precision": 0.8690476190476191,
+                "recall": 1.0,
+                "f1-score": 0.9299363057324841,
+                "support": 73.0
+            },
+            "2": {
+                "precision": 0.8984771573604061,
+                "recall": 1.0,
+                "f1-score": 0.946524064171123,
+                "support": 177.0
+            },
+            "3": {
+                "precision": 1.0,
+                "recall": 0.9902454373820012,
+                "f1-score": 0.9950988142292491,
+                "support": 3178.0
+            },
+            "accuracy": 0.9909568261376897,
+            "macro avg": {
+                "precision": 0.9225082588026751,
+                "recall": 0.9967484791273337,
+                "f1-score": 0.957186394710952,
+                "support": 3428.0
+            },
+            "weighted avg": {
+                "precision": 0.9919693503626803,
+                "recall": 0.9909568261376897,
+                "f1-score": 0.9912030750575594,
+                "support": 3428.0
+            }
+        }
+    },
+    "limitations": [
+        "Historical dataset collected in 1992.",
+        "Not evidence of present-day clinical validity.",
+        "Class labels require clinical interpretation verification.",
+        "Not interchangeable with the app's TSH, FT4 and FT3 form.",
+        "Research classification only; not a diagnosis."
+    ]
+}
