@@ -1,4 +1,4 @@
-Open http://localhost:8501 if the browser does not open automatically.
+Open http://localhost:8503 if the browser does not open automatically.
 
 # ThyroGaurd
 
