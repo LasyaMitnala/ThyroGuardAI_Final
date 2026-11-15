@@ -1,4 +1,4 @@
-Open http://localhost:8503 if the browser does not open automatically.
+Open http://localhost:8508 if the browser does not open automatically.
 
 # ThyroGaurd
 
@@ -21,33 +21,62 @@ Model: We use a Random Forest classifier implemented with Python and scikit-lear
 
 ## Results
 
-Our ThyroAI machine-learning model demonstrated strong performance in classifying thyroid-related patterns using the UCI Thyroid Disease dataset. We trained our model on 3,772 records containing 21 clinical and laboratory features and evaluated its performance using an official held-out test dataset of 3,428 records.
+Our ThyroAI machine-learning model demonstrated strong performance in classifying thyroid-related patterns using the UCI Thyroid Disease dataset. We trained our model on 3,772 records containing 21 numerical features and evaluated its performance using an official held-out test dataset of 3,428 records.
 
-We compared two machine-learning algorithms, Random Forest and Logistic Regression. Random Forest outperformed Logistic Regression during validation, achieving **99.34% accuracy, 99.76% balanced accuracy, and a 97.36% macro F1-score**. Consequently, we selected Random Forest as our final classification model.
+We compared two machine-learning algorithms, Random Forest and Logistic Regression. Random Forest outperformed Logistic Regression during validation, achieving 99.34% accuracy, 99.76% balanced accuracy, and a 97.36% macro F1-score. Consequently, we selected Random Forest as our final classification model.
 
 On the official test dataset, our model achieved:
 
-- **Accuracy:** 99.10%
-- **Balanced Accuracy:** 99.67%
-- **Macro F1-Score:** 95.72%
+Accuracy: 99.10%
+
+Balanced Accuracy: 99.67%
+
+Macro F1-Score: 95.72%
 
 The model correctly classified all 73 Class 1 cases and all 177 Class 2 cases, while correctly identifying 3,147 of 3,178 Class 3 cases. Its 31 misclassifications involved Class 3 records being predicted as Class 1 or Class 2. Although these results demonstrate strong performance on historical test data, they do not establish clinical diagnostic reliability.
 
-**AI Integration into ThyroGuard
+Model Limitations and Future Validation
 
-The application's primary feature, **ThyroAI**, is designed to use our trained Random Forest classifier to analyze patient-provided demographic information, medical history, and thyroid laboratory measurements. The model produces a classification based on patterns learned from the UCI dataset, providing an AI-powered component beyond traditional symptom tracking.
+While our initial results were promising, our development timeline limited us primarily to initial model training, algorithm comparison, and preliminary evaluation. Although we evaluated the model using an official held-out test dataset, additional validation is necessary to determine whether its performance generalizes beyond the historical records used in development.
+
+With more time, we would conduct extensive cross-validation, investigate potential data leakage and overlapping records, and perform additional hyperparameter optimization to improve model reliability. We would also evaluate the model using independent clinical datasets to assess its performance across more diverse patient populations and thyroid conditions. Furthermore, we would incorporate explainable AI techniques, such as SHAP (SHapley Additive exPlanations), to better understand which features contribute most significantly to the model's predictions.
+
+An important limitation of our initial model is that its 21 numerical input features are not fully mapped to interpretable clinical measurements. Before implementing the classifier in a patient-facing application, we would need to verify the meaning of each feature, establish reliable input mappings, and conduct further testing to ensure predictions are interpretable and appropriate for the intended use.
+
+Ultimately, these additional steps would allow us to move beyond our initial proof of concept toward a more robust, transparent, and clinically responsible machine-learning system.
+
+## AI Integration into ThyroGuard
+
+The application's primary AI feature, ThyroAI, is designed to integrate our trained Random Forest classifier into an accessible, interactive health-monitoring platform. Our long-term goal is to allow users to enter relevant demographic information, medical history, and thyroid laboratory measurements, which could then be analyzed using machine-learning models trained on compatible clinical datasets.
+
+During our initial development phase, we focused on building and evaluating the underlying machine-learning models alongside the application's user interface. While the initial classifier demonstrated strong performance on historical test data, further feature mapping, validation, and integration testing are required before its predictions can be reliably generated from patient-entered information. As a result, ThyroAI currently represents an early-stage AI-assisted classification system rather than a clinically validated diagnostic tool.
 
 ThyroGuard also includes several supporting features:
 
-- **ThyroidTrend:** Organizes thyroid laboratory measurements and visualizes changes over time.
-- **SymptomWatch:** Allows patients to record and monitor symptoms.
-- **FollowUpGuard:** Tracks follow-up appointments and monitoring plans.
-- **Patient Management:** Organizes patient profiles and associated health records.
-- **Reports:** Generates downloadable PDF summaries and CSV exports of recorded health information.
+ThyroidTrend: Organizes thyroid laboratory measurements and visualizes changes over time to help users recognize trends in their recorded health information.
+
+SymptomWatch: Allows patients to record and monitor symptoms, creating a structured history of changes in their condition.
+
+FollowUpGuard: Tracks follow-up appointments and monitoring plans to support consistent long-term health management.
+
+Patient Management: Organizes patient profiles and associated health records within a centralized interface.
+
+Reports: Generates downloadable PDF summaries and CSV exports of recorded health information to facilitate documentation and communication.
+
+Together, these features establish the foundation for a comprehensive thyroid health-monitoring platform that combines structured recordkeeping, symptom tracking, laboratory visualization, and preliminary machine-learning research. With further development, our goal is to strengthen the connection between these components and introduce more extensively validated AI-assisted insights, helping users better understand their recorded health information while supporting—not replacing—professional medical evaluation.
 
 Together, these features establish a unified platform that combines machine-learning classification with longitudinal health monitoring. Our next steps are to verify end-to-end model inference within the deployed application, improve the interpretability of AI predictions, and integrate classification results into downloadable reports.
 
-**Limitations:** ThyroAI is an educational research prototype, not a clinically validated diagnostic tool. Its predictions require careful interpretation, particularly because the model was trained on historical data that may not represent all patient populations.
+Our final binary classification model, developed using a Random Forest algorithm, demonstrated promising preliminary performance on the dataset's held-out test partition. The model achieved 99.69% accuracy, 99.83% balanced accuracy, 95.95% precision, 100% recall, and a 97.93% F1-score. Of the 972 test records, the model correctly classified 898 negative cases and all 71 hypothyroid cases, with three negative cases incorrectly classified as hypothyroid. These results suggest that the model successfully identified distinguishing patterns within the historical dataset, particularly in recognizing records labeled as hypothyroid.
+
+In addition to binary classification, we trained a multiclass Random Forest model to distinguish between different hypothyroid classifications. This model achieved 99.18% test accuracy, 99.70% balanced accuracy, and a 96.64% macro F1-score across the three classes represented in the test set. However, certain diagnostic categories were severely underrepresented, limiting our ability to evaluate performance across all thyroid conditions reliably.
+
+**Limitations:** 
+Due to the limited development timeline, our work focused primarily on initial model training, preliminary validation, and evaluation using the available historical datasets. Although the results were encouraging, they do not establish that ThyroAI would perform equally well on new patient populations or in clinical settings. The unusually high performance also warrants further investigation into potential data leakage, overlapping records, and dataset-specific patterns.
+
+With additional development time, we would conduct more extensive cross-validation, systematically investigate data quality and possible leakage, optimize model hyperparameters, and evaluate performance on independent datasets representing more diverse patient populations. We would also explore explainable AI methods, such as SHAP, to identify which clinical features contribute most strongly to individual predictions.
+
+Overall, our initial results demonstrate the technical feasibility of using machine learning to classify thyroid-related records within a historical dataset. While further validation and refinement are necessary, this preliminary proof of concept establishes a foundation for developing ThyroAI into a more reliable, transparent, and responsible AI-assisted thyroid health application.
 
 ## What we'd do next
 With more time, we would expand ThyroGuard by training models on larger and more diverse clinical datasets, improving prediction calibration, and incorporating explainable AI techniques such as SHAP to clarify individual predictions. We would also explore longitudinal datasets to develop models capable of identifying changes in thyroid health over time and evaluate the system with clinical experts before considering real-world use.
