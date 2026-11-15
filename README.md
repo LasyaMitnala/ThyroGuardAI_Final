@@ -21,8 +21,6 @@ Model: We use a Random Forest classifier implemented with Python and scikit-lear
 
 ## Results
 
-## Results
-
 Our ThyroAI machine-learning model demonstrated strong performance in classifying thyroid-related patterns using the UCI Thyroid Disease dataset. We trained our model on 3,772 records containing 21 clinical and laboratory features and evaluated its performance using an official held-out test dataset of 3,428 records.
 
 We compared two machine-learning algorithms, Random Forest and Logistic Regression. Random Forest outperformed Logistic Regression during validation, achieving **99.34% accuracy, 99.76% balanced accuracy, and a 97.36% macro F1-score**. Consequently, we selected Random Forest as our final classification model.
