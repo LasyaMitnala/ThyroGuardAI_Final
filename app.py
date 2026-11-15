@@ -36,6 +36,7 @@ with st.sidebar:
 
     st.page_link("app.py", label="Overview")
     st.page_link("pages/0_Patient_Management.py", label="Patient Management")
+    st.page_link("pages/ThyroAI.py", label="ThyroAI")
     st.page_link("pages/1_ThyroidTrend.py", label="ThyroidTrend")
     st.page_link("pages/2_SymptomWatch.py", label="SymptomWatch")
     st.page_link("pages/3_FollowUpGuard.py", label="FollowUpGuard")
@@ -94,7 +95,7 @@ for col, (label, value, help_text) in zip(cols, metrics):
         )
 
 # --------------------------------------------------
-# THREE CORE MONITORING MODULES
+# FOUR CONNECTED THYROGUARD MODULES
 # --------------------------------------------------
 
 left, right = st.columns([1.35, 1])
@@ -103,11 +104,17 @@ with left:
 
     st.markdown(
         '<div class="section-kicker">YOUR WORKSPACE</div>'
-        '<div class="section-title">Three connected monitoring modules</div>',
+        '<div class="section-title">Four connected monitoring modules</div>',
         unsafe_allow_html=True
     )
 
     cards = [
+        (
+            "00",
+            "ThyroAI",
+            "Run a machine-learning thyroid research classification using the Random Forest model.",
+            "pages/ThyroAI.py"
+        ),
         (
             "01",
             "ThyroidTrend",
@@ -159,17 +166,20 @@ with right:
       <div class="check-row">✓ Clinical visual system</div>
       <div class="check-row">✓ Local SQLite database</div>
       <div class="check-row">✓ Patient management</div>
-      <div class="check-row">✓ Three monitoring modules</div>
-      <div class="check-row">○ Validated machine-learning pipelines</div>
-      <div class="check-row">○ AI-assisted analysis</div>
-      <div class="check-row">○ Report generation and export</div>
+      <div class="check-row">✓ ThyroAI Random Forest classifier</div>
+      <div class="check-row">✓ ThyroidTrend</div>
+      <div class="check-row">✓ SymptomWatch</div>
+      <div class="check-row">✓ FollowUpGuard</div>
     </div>
 
     <div class="panel subtle-panel">
       <div class="panel-title">Our AI approach</div>
-      <p>ThyroGuard will distinguish validated machine-learning
-      predictions from transparent trend calculations, symptom
-      pattern analysis, and clinician-directed reminder rules.</p>
+      <p>ThyroAI uses a trained Random Forest classifier
+      to analyze compatible clinical and laboratory features
+      from the historical UCI thyroid dataset. Its research
+      classifications are separate from clinical diagnosis.
+      ThyroidTrend, SymptomWatch, and FollowUpGuard provide
+      complementary monitoring functionality.</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -178,5 +188,6 @@ with right:
 # --------------------------------------------------
 
 st.caption(
-    "ThyroGuard prototype · Three-module architecture · Local demo only"
+    "ThyroGuard prototype · ML-assisted thyroid research and monitoring · "
+    "This project is a prototype and is not medical advice."
 )
