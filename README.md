@@ -1,6 +1,8 @@
 ## https://thyroguard.streamlit.app/
 Here is the app deployed on streamlit!
 
+## THYROGUARD IS NOT A MEDICAL PROFESSIONAL AND ONLY A PROTOTYPE. DO NOT USE FOR MEDICAL DIAGNOSES.
+
 ## ThyroGuard
 
 **Track:** Health  
