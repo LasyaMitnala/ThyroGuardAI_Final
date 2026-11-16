@@ -343,11 +343,11 @@ with st.form("thyroai_assessment_form"):
     st.markdown("#### 3. Thyroid laboratory measurements")
 
     st.info(
-        "Enter raw values only if they are already "
-        "expressed in the original UCI dataset's "
-        "measurement conventions. Do not copy values "
-        "from a modern lab report without verifying "
-        "the units and definitions."
+        "**Research Model — Important Information**\n\n"
+        "ThyroAI is an experimental machine-learning tool and is not "
+        "intended for medical diagnosis. Laboratory measurements must "
+        "match the model's original dataset conventions. Compatibility "
+        "with standard clinical lab reports has not yet been verified."
     )
 
     lab_inputs = {}
@@ -368,8 +368,6 @@ with st.form("thyroai_assessment_form"):
             st.caption(description)
 
     st.divider()
-
-    
 
     acknowledged = st.checkbox(
         "I understand that this is an experimental "
