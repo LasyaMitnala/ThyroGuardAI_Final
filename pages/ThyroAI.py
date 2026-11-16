@@ -1,16 +1,30 @@
-import streamlit as st
-import pandas as pd
-from utils.navigation import render_sidebar
+
+"""ThyroAI — three-class thyroid research interface.
+
+Run from project root:
+    streamlit run app.py
+
+Uses:
+    models/clinical_thyroid_three_class.joblib
+
+Research only. Not a clinical diagnostic system.
+"""
+
 from datetime import datetime, timezone
+from pathlib import Path
 
+import joblib
+import numpy as np
+import pandas as pd
+import streamlit as st
 
+from utils.navigation import render_sidebar
 from utils.ui import load_css, page_header
-from utils.patient_context import patient_sidebar
-from ml.thyroai_engine import (
-    predict_record,
-    CLASS_DESCRIPTIONS,
-    load_model,
-)
+
+
+# --------------------------------------------------
+# PAGE CONFIGURATION
+# --------------------------------------------------
 
 st.set_page_config(
     page_title="ThyroAI | ThyroGuard",
@@ -19,137 +33,350 @@ st.set_page_config(
 )
 
 load_css()
-
 render_sidebar()
 
 page_header(
     "ThyroAI",
-    "A research-oriented thyroid-function classification using your trained Random Forest model."
+    "Explore thyroid laboratory patterns using our "
+    "experimental three-class research model.",
 )
 
+ROOT = Path(__file__).resolve().parents[1]
+
+MODEL_PATH = (
+    ROOT / "models" / "clinical_thyroid_three_class.joblib"
+)
+
+MODEL_FEATURES = [
+    "age", "sex", "on_thyroxine", "query_on_thyroxine",
+    "on_antithyroid_medication", "sick", "pregnant",
+    "thyroid_surgery", "i131_treatment",
+    "query_hypothyroid", "query_hyperthyroid",
+    "lithium", "goitre", "tumor", "hypopituitary",
+    "psych", "tsh_measured", "tsh", "t3_measured",
+    "t3", "tt4_measured", "tt4", "t4u_measured",
+    "t4u", "fti_measured", "fti", "tbg_measured",
+    "referral_source",
+]
+
+CLASS_LABELS = {
+    "negative": "Negative dataset category",
+    "hypothyroid": "Hypothyroid dataset category",
+    "hyperthyroid": "Hyperthyroid dataset category",
+}
+
+HISTORY = [
+    (
+        "on_thyroxine",
+        "Taking thyroid hormone replacement medication",
+    ),
+    (
+        "query_on_thyroxine",
+        "Thyroid hormone treatment under consideration",
+    ),
+    (
+        "on_antithyroid_medication",
+        "Taking antithyroid medication",
+    ),
+    ("sick", "Ill at the time of testing"),
+    ("pregnant", "Pregnant at the time of testing"),
+    ("thyroid_surgery", "History of thyroid surgery"),
+    ("i131_treatment", "History of radioactive iodine treatment"),
+    (
+        "query_hypothyroid",
+        "Hypothyroidism under clinical consideration",
+    ),
+    (
+        "query_hyperthyroid",
+        "Hyperthyroidism under clinical consideration",
+    ),
+    ("lithium", "Taking lithium at the time of testing"),
+    ("goitre", "History of enlarged thyroid (goiter)"),
+    ("tumor", "History of tumor"),
+    ("hypopituitary", "History of reduced pituitary function"),
+    ("psych", "Psychiatric condition recorded in history"),
+]
+
+LABS = [
+    ("tsh", "TSH", "Thyroid-stimulating hormone"),
+    ("t3", "T3", "Triiodothyronine"),
+    ("tt4", "TT4", "Total thyroxine"),
+    ("t4u", "T4U", "Thyroxine uptake"),
+    ("fti", "FTI", "Free thyroxine index"),
+]
+
+REFERRAL_SOURCES = [
+    "Unknown / not recorded",
+    "SVHC",
+    "SVI",
+    "SVHD",
+    "STMW",
+    "other",
+]
+
+
+# --------------------------------------------------
+# HELPERS
+# --------------------------------------------------
+
+def categorical_answer(answer):
+    return {
+        "Yes": "t",
+        "No": "f",
+        "Not sure": np.nan,
+    }[answer]
+
+
+def parse_optional_number(value, field_name):
+    value = value.strip()
+
+    if not value:
+        return np.nan
+
+    try:
+        result = float(value)
+    except ValueError:
+        raise ValueError(
+            f"{field_name} must be a number or left blank."
+        )
+
+    if not np.isfinite(result):
+        raise ValueError(
+            f"{field_name} must be a finite number."
+        )
+
+    if result < 0:
+        raise ValueError(
+            f"{field_name} cannot be negative."
+        )
+
+    return result
+
+
+@st.cache_resource(show_spinner=False)
+def get_model():
+    return joblib.load(MODEL_PATH)
+
+
+def prepare_record(age, sex, history, labs, referral):
+    record = {
+        feature: np.nan
+        for feature in MODEL_FEATURES
+    }
+
+    record["age"] = age
+    record["sex"] = sex
+
+    for key, value in history.items():
+        record[key] = value
+
+    for key, value in labs.items():
+        record[key] = value
+        record[f"{key}_measured"] = (
+            "f" if pd.isna(value) else "t"
+        )
+
+    record["tbg_measured"] = "f"
+    record["referral_source"] = referral
+
+    return pd.DataFrame(
+        [record],
+        columns=MODEL_FEATURES,
+    )
+
+
+def format_score(value):
+    return f"{value * 100:.1f}%"
+
+
+# --------------------------------------------------
+# SESSION STATE
+# --------------------------------------------------
+
+if "thyroai_history" not in st.session_state:
+    st.session_state.thyroai_history = []
+
+if "thyroai_result" not in st.session_state:
+    st.session_state.thyroai_result = None
+
+
+# --------------------------------------------------
+# INTRODUCTION
+# --------------------------------------------------
+
 st.warning(
-    "Research prototype only. This tool does not diagnose thyroid disease, "
-    "recommend treatment, or replace a qualified clinician. "
-    "This project is a prototype and is not medical advice."
+    "Research prototype only. This tool does not "
+    "diagnose, screen for, or rule out thyroid disease. "
+    "Do not use its results to make medical decisions."
 )
 
 st.markdown(
     """
-    The existing Random Forest was trained on the UCI ANN Thyroid Disease
-    dataset. It expects 21 features in the original dataset order. The model
-    was trained on the dataset's scaled continuous values, so this form asks
-    for values on that same dataset scale—not ordinary laboratory units.
+    ThyroAI explores patterns in historical thyroid records
+    using a machine-learning model trained on paired
+    **UCI allhypo and allhyper datasets**.
+
+    The model predicts one of three historical dataset labels:
+
+    - Negative
+    - Hypothyroid
+    - Hyperthyroid
+
+    **Negative does not mean medically confirmed normal.**
+    Model scores are not calibrated probabilities of disease.
     """
 )
 
-with st.expander("What is being classified?", expanded=True):
+with st.expander("About this research model"):
     st.markdown(
         """
-        - **Class 1:** Normal / Not hypothyroid
-        - **Class 2:** Hyperthyroid
-        - **Class 3:** Hypothyroid
+        **Algorithm:** Random Forest classifier
 
-        These are the dataset's original categories. They are research labels,
-        not a personal medical diagnosis.
+        **Training records:** 2,800
+
+        **Official test records:** 972
+
+        **Reported test accuracy:** 98.66%
+
+        **Reported balanced accuracy:** 91.73%
+
+        **Reported macro F1:** 92.12%
+
+        These figures describe performance on historical
+        records, not clinical performance on new patients.
+
+        The model requires the original dataset's feature
+        definitions, categorical codes, and measurement
+        conventions. These have not yet been fully verified
+        for use with modern patient laboratory reports.
         """
     )
 
-try:
-    model = load_model()
-    st.success(
-        f"Model loaded successfully · {type(model.named_steps['model']).__name__} · "
-        f"{model.named_steps['model'].n_estimators} trees · 21 features"
+
+# --------------------------------------------------
+# MODEL LOADING
+# --------------------------------------------------
+
+if not MODEL_PATH.is_file():
+    st.error(
+        "The three-class model was not found at:\n\n"
+        f"{MODEL_PATH}"
     )
-except Exception as exc:
-    st.error(f"Could not load the trained model: {exc}")
     st.stop()
 
-st.subheader("Enter a dataset-compatible record")
+try:
+    model = get_model()
+
+    if not hasattr(model, "predict_proba"):
+        raise TypeError(
+            "The saved model does not support predict_proba."
+        )
+
+except Exception as exc:
+    st.error(
+        "The research model could not be loaded. "
+        f"Details: {exc}"
+    )
+    st.stop()
+
+
+# --------------------------------------------------
+# ASSESSMENT FORM
+# --------------------------------------------------
+
+st.divider()
+
+st.subheader("New research assessment")
+
 st.caption(
-    "Use documented source values where available. Do not guess unknown "
-    "medical history or enter ordinary lab units into scaled-value fields."
+    "Use de-identified research records only. "
+    "Do not enter names, addresses, or other identifiers."
 )
 
 with st.form("thyroai_assessment_form"):
-    st.markdown("#### 1. Demographic features")
-    c1, c2 = st.columns(2)
-    with c1:
-        age_scaled = st.number_input(
-            "Age (Divide your age by 100, e.g., 30 years = 0.30)", min_value=0.0, max_value=1.0,
-            value=0.50, step=0.01,
-            help="The ANN dataset stores age on a scaled 0–1-like range. Do not enter age in years here."
-        )
-    with c2:
-        sex = st.selectbox(
-            "Sex/Gender",
-            options=[0, 1],
-            format_func=lambda x: "0 — Male" if x == 0 else "1 — Female",
+
+    st.markdown("#### 1. Record information")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        age_input = st.text_input(
+            "Age in years",
+            placeholder="Example: 35",
         )
 
-st.markdown("#### 2. Your medical history")
-st.caption(
-    "Answer the following questions based on your medical history. "
-    "Your responses help ThyroAI analyze patterns in your health information."
-)
-    
-binary_labels = [
-    ("on_thyroxine", "Are you currently taking thyroid hormone medication?"),
-    ("query_on_thyroxine", "Has a healthcare provider discussed starting thyroid hormone medication with you?"),
-    ("on_antithyroid_medication", "Are you currently taking medication to reduce thyroid hormone production?"),
-    ("sick", "Were you experiencing an illness when your laboratory tests were taken?"),
-    ("pregnant", "Are you currently pregnant?"),
-    ("thyroid_surgery", "Have you previously had thyroid surgery?"),
-    ("i131_treatment", "Have you received radioactive iodine treatment for a thyroid condition?"),
-    ("query_hypothyroid", "Has a healthcare provider raised concerns about an underactive thyroid?"),
-    ("query_hyperthyroid", "Has a healthcare provider raised concerns about an overactive thyroid?"),
-    ("lithium", "Are you currently taking lithium medication?"),
-    ("goitre", "Have you been diagnosed with an enlarged thyroid (goiter)?"),
-    ("tumor", "Have you been diagnosed with a thyroid tumor?"),
-    ("hypopituitary", "Have you been diagnosed with reduced pituitary gland function?"),
-    ("psych", "Do you have a history of a mental health condition?")
-]
-
-binary_values = []
-cols = st.columns(2)
-
-for i, (key, label) in enumerate(binary_labels):
-    with cols[i % 2]:
-        val = st.selectbox(
-            label,
-            options=[0, 1],
-            format_func=lambda x: "No" if x == 0 else "Yes",
-            key=f"thyroai_{key}",
+    with col2:
+        sex_input = st.selectbox(
+            "Sex as coded in the UCI dataset",
+            ["Not recorded", "Female (F)", "Male (M)"],
         )
-        binary_values.append(int(val))
-         
 
+    st.divider()
 
-    st.markdown("#### 3. Laboratory features")
-    st.info(
-        "These are normalized dataset values, not standard clinical units. "
-        "Only enter values that have been converted to the exact ANN dataset scale."
+    st.markdown("#### 2. Medical history")
+
+    st.caption(
+        "Select Not sure when the information is "
+        "missing or not recorded."
     )
-    lab_specs = [
-        ("TSH", 0.0, 0.53, 0.05, "attribute_17"),
-        ("T3", 0.0005, 0.18, 0.02, "attribute_18"),
-        ("TT4", 0.002, 0.60, 0.10, "attribute_19"),
-        ("T4U", 0.017, 0.233, 0.10, "attribute_20"),
-        ("FTI", 0.002, 0.642, 0.10, "attribute_21"),
-    ]
-    lab_values = []
-    cols = st.columns(2)
-    for i, (name, low, high, default, key) in enumerate(lab_specs):
-        with cols[i % 2]:
-            value = st.number_input(
-                f"{name} (dataset scale)",
-                min_value=float(low),
-                max_value=float(high),
-                value=float(default),
-                format="%.6f",
-                key=f"thyroai_{key}",
-                help="Enter the dataset-scaled value, not a value copied directly from a clinical lab report."
+
+    history_answers = {}
+
+    left, right = st.columns(2)
+
+    for index, (key, question) in enumerate(HISTORY):
+        column = left if index % 2 == 0 else right
+
+        with column:
+            answer = st.selectbox(
+                question,
+                ["Not sure", "No", "Yes"],
+                key=f"history_{key}",
             )
-            lab_values.append(float(value))
+
+            history_answers[key] = categorical_answer(
+                answer
+            )
+
+    st.divider()
+
+    st.markdown("#### 3. Thyroid laboratory measurements")
+
+    st.info(
+        "Enter raw values only if they are already "
+        "expressed in the original UCI dataset's "
+        "measurement conventions. Do not copy values "
+        "from a modern lab report without verifying "
+        "the units and definitions."
+    )
+
+    lab_inputs = {}
+
+    for key, short_name, description in LABS:
+        col1, col2 = st.columns([1, 2])
+
+        with col1:
+            value = st.text_input(
+                short_name,
+                placeholder="Leave blank if unavailable",
+                key=f"lab_{key}",
+            )
+
+            lab_inputs[key] = value
+
+        with col2:
+            st.caption(description)
+
+    st.divider()
+
+    
+
+    acknowledged = st.checkbox(
+        "I understand that this is an experimental "
+        "research classifier, not a medical assessment, "
+        "and that my input values must follow the "
+        "original dataset's coding conventions."
+    )
 
     submitted = st.form_submit_button(
         "Run research classification",
@@ -157,73 +384,259 @@ for i, (key, label) in enumerate(binary_labels):
         use_container_width=True,
     )
 
+
+# --------------------------------------------------
+# RUN PREDICTION
+# --------------------------------------------------
+
 if submitted:
-    # Training feature order:
-    # age, sex, 14 binary indicators, then TSH, T3, TT4, T4U, FTI.
-    record = [float(age_scaled), float(sex)] + [float(v) for v in binary_values] + lab_values
-    try:
-        predicted_class, probabilities = predict_record(record)
-        result = {
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "patient_id": active_patient_id,
-            "predicted_class": predicted_class,
-            "label": CLASS_DESCRIPTIONS.get(predicted_class, f"Dataset class {predicted_class}"),
-        }
-        st.session_state.setdefault("thyroai_history", [])
-        st.session_state["thyroai_history"].insert(0, result)
 
-        st.divider()
-        st.subheader("Research classification output")
-        st.metric("Predicted dataset category", result["label"])
-        st.caption(
-            f"Original target label: {predicted_class}. "
-            "This is a model classification of the supplied dataset-style record, not a diagnosis."
+    if not acknowledged:
+        st.error(
+            "Please acknowledge the research limitations "
+            "before running the model."
         )
 
-        if probabilities is not None:
-            probability_rows = [
-                {
-                    "Dataset category": CLASS_DESCRIPTIONS.get(k, str(k)),
-                    "Model probability": v,
-                }
-                for k, v in probabilities.items()
+    else:
+        try:
+            age = parse_optional_number(
+                age_input,
+                "Age",
+            )
+
+            labs = {}
+
+            for key, short_name, _ in LABS:
+                labs[key] = parse_optional_number(
+                    lab_inputs[key],
+                    short_name,
+                )
+
+            sex = {
+                "Not recorded": np.nan,
+                "Female (F)": "F",
+                "Male (M)": "M",
+            }[sex_input]
+
+            referral = np.nan
+
+            input_df = prepare_record(
+                age=age,
+                sex=sex,
+                history=history_answers,
+                labs=labs,
+                referral=referral,
+            )
+
+            predicted = str(
+                model.predict(input_df)[0]
+            )
+
+            probabilities = model.predict_proba(
+                input_df
+            )[0]
+
+            classes = [
+                str(value)
+                for value in model.classes_
             ]
-            probability_df = pd.DataFrame(probability_rows)
-            st.markdown("#### Model probability output")
-            st.bar_chart(
-                probability_df.set_index("Dataset category")["Model probability"]
-            )
-            st.caption(
-                "These are model probability outputs, not calibrated clinical confidence "
-                "or an individual's probability of having a disease."
+
+            scores = {
+                label: float(probability)
+                for label, probability in zip(
+                    classes,
+                    probabilities,
+                )
+            }
+
+            timestamp = datetime.now(
+                timezone.utc
+            ).strftime("%Y-%m-%d %H:%M UTC")
+
+            result = {
+                "timestamp": timestamp,
+                "prediction": predicted,
+                "scores": scores,
+                "input": input_df.iloc[0].to_dict(),
+            }
+
+            st.session_state.thyroai_result = result
+
+            # Store results in session only.
+            st.session_state.thyroai_history.append({
+                "Timestamp": timestamp,
+                "Dataset classification": predicted,
+                "Negative score": scores.get(
+                    "negative", 0.0
+                ),
+                "Hypothyroid score": scores.get(
+                    "hypothyroid", 0.0
+                ),
+                "Hyperthyroid score": scores.get(
+                    "hyperthyroid", 0.0
+                ),
+            })
+
+        except ValueError as exc:
+            st.error(str(exc))
+
+        except Exception as exc:
+            st.error(
+                "The research classification could "
+                f"not be completed: {exc}"
             )
 
-        st.info(
-            "Interpret this result only as an experimental classification within "
-            "the historical UCI dataset's label system. Discuss health concerns "
-            "and laboratory results with a qualified clinician."
+
+# --------------------------------------------------
+# RESULTS DASHBOARD
+# --------------------------------------------------
+
+result = st.session_state.thyroai_result
+
+if result is not None:
+
+    st.divider()
+
+    st.subheader("Research classification results")
+
+    predicted = result["prediction"]
+    scores = result["scores"]
+
+    st.caption(
+        f"Assessment completed: {result['timestamp']}"
+    )
+
+    st.info(
+        "Predicted historical dataset category: "
+        f"**{CLASS_LABELS.get(predicted, predicted)}**"
+    )
+
+    st.markdown("#### Model classification scores")
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.metric(
+            "Negative",
+            format_score(
+                scores.get("negative", 0.0)
+            ),
         )
-    except Exception as exc:
-        st.error(f"Prediction could not be completed: {exc}")
+
+    with col2:
+        st.metric(
+            "Hypothyroid",
+            format_score(
+                scores.get("hypothyroid", 0.0)
+            ),
+        )
+
+    with col3:
+        st.metric(
+            "Hyperthyroid",
+            format_score(
+                scores.get("hyperthyroid", 0.0)
+            ),
+        )
+
+    score_df = pd.DataFrame({
+        "Category": [
+            "Negative",
+            "Hypothyroid",
+            "Hyperthyroid",
+        ],
+        "Model score": [
+            scores.get("negative", 0.0),
+            scores.get("hypothyroid", 0.0),
+            scores.get("hyperthyroid", 0.0),
+        ],
+    })
+
+    st.bar_chart(
+        score_df.set_index("Category"),
+        y="Model score",
+    )
+
+    st.caption(
+        "These are Random Forest classification scores, "
+        "not calibrated medical probabilities."
+    )
+
+    st.markdown("#### Laboratory values supplied")
+
+    lab_rows = []
+
+    for key, short_name, description in LABS:
+        value = result["input"].get(key)
+
+        lab_rows.append({
+            "Test": short_name,
+            "Description": description,
+            "Value": (
+                "Not recorded"
+                if pd.isna(value)
+                else str(value)
+            ),
+        })
+
+    st.dataframe(
+        pd.DataFrame(lab_rows),
+        hide_index=True,
+        use_container_width=True,
+    )
+
+    st.warning(
+        "This result cannot establish whether thyroid "
+        "function is normal or abnormal. Clinical "
+        "interpretation requires appropriate laboratory "
+        "reference ranges, medical history, and "
+        "professional evaluation."
+    )
+
+
+# --------------------------------------------------
+# ASSESSMENT HISTORY
+# --------------------------------------------------
 
 st.divider()
-st.subheader("Recent ThyroAI session history")
-history = st.session_state.get("thyroai_history", [])
+
+st.subheader("Assessment history")
+
+history = st.session_state.thyroai_history
+
 if history:
+
     history_df = pd.DataFrame(history)
+
     st.dataframe(
-        history_df[["timestamp", "patient_id", "predicted_class", "label"]],
-        use_container_width=True,
+        history_df,
         hide_index=True,
+        use_container_width=True,
     )
-    st.caption(
-        "This history is stored only in the current browser session. "
-        "It is not yet saved to the SQLite database."
+
+    csv_data = history_df.to_csv(
+        index=False
+    ).encode("utf-8")
+
+    st.download_button(
+        "Export session history as CSV",
+        data=csv_data,
+        file_name="thyroai_research_history.csv",
+        mime="text/csv",
     )
+
+    if st.button("Clear assessment history"):
+        st.session_state.thyroai_history = []
+        st.session_state.thyroai_result = None
+        st.rerun()
+
 else:
-    st.caption("No assessments have been run in this session.")
+    st.caption(
+        "No assessments have been completed "
+        "in this session."
+    )
 
 st.caption(
-    "Dataset: UCI ANN Thyroid Disease · Historical data (1992) · "
-    "Research classification only · This project is a prototype and is not medical advice."
+    "Session history is temporary and is not "
+    "saved to a patient database."
 )

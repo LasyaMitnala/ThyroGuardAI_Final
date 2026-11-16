@@ -1,0 +1,252 @@
+{
+  "dataset": "Paired UCI allhypo and allhyper",
+  "task": "Three-category historical thyroid record classification",
+  "features": [
+    "age",
+    "sex",
+    "on_thyroxine",
+    "query_on_thyroxine",
+    "on_antithyroid_medication",
+    "sick",
+    "pregnant",
+    "thyroid_surgery",
+    "i131_treatment",
+    "query_hypothyroid",
+    "query_hyperthyroid",
+    "lithium",
+    "goitre",
+    "tumor",
+    "hypopituitary",
+    "psych",
+    "tsh_measured",
+    "tsh",
+    "t3_measured",
+    "t3",
+    "tt4_measured",
+    "tt4",
+    "t4u_measured",
+    "t4u",
+    "fti_measured",
+    "fti",
+    "tbg_measured",
+    "referral_source"
+  ],
+  "train_counts": {
+    "negative": 2503,
+    "hypothyroid": 220,
+    "hyperthyroid": 77
+  },
+  "test_counts": {
+    "negative": 876,
+    "hypothyroid": 71,
+    "hyperthyroid": 25
+  },
+  "shared_feature_patterns": 0,
+  "overlapping_train_records": 0,
+  "overlapping_test_records": 0,
+  "validation": {
+    "records": 560,
+    "class_counts": {
+      "negative": 501,
+      "hypothyroid": 44,
+      "hyperthyroid": 15
+    },
+    "accuracy": 0.9785714285714285,
+    "balanced_accuracy": 0.9204348878001573,
+    "macro_f1": 0.8978438358197877,
+    "labels": [
+      "negative",
+      "hypothyroid",
+      "hyperthyroid"
+    ],
+    "confusion_matrix": [
+      [
+        493,
+        3,
+        5
+      ],
+      [
+        1,
+        43,
+        0
+      ],
+      [
+        3,
+        0,
+        12
+      ]
+    ],
+    "classification_report": {
+      "negative": {
+        "precision": 0.9919517102615694,
+        "recall": 0.9840319361277445,
+        "f1-score": 0.9879759519038076,
+        "support": 501.0
+      },
+      "hypothyroid": {
+        "precision": 0.9347826086956522,
+        "recall": 0.9772727272727273,
+        "f1-score": 0.9555555555555556,
+        "support": 44.0
+      },
+      "hyperthyroid": {
+        "precision": 0.7058823529411765,
+        "recall": 0.8,
+        "f1-score": 0.75,
+        "support": 15.0
+      },
+      "accuracy": 0.9785714285714285,
+      "macro avg": {
+        "precision": 0.8775388906327994,
+        "recall": 0.9204348878001573,
+        "f1-score": 0.8978438358197877,
+        "support": 560.0
+      },
+      "weighted avg": {
+        "precision": 0.9797972802103083,
+        "recall": 0.9785714285714285,
+        "f1-score": 0.9790542791933071,
+        "support": 560.0
+      }
+    }
+  },
+  "test": {
+    "records": 972,
+    "class_counts": {
+      "negative": 876,
+      "hypothyroid": 71,
+      "hyperthyroid": 25
+    },
+    "accuracy": 0.9866255144032922,
+    "balanced_accuracy": 0.9173363774733638,
+    "macro_f1": 0.9211842275131232,
+    "labels": [
+      "negative",
+      "hypothyroid",
+      "hyperthyroid"
+    ],
+    "confusion_matrix": [
+      [
+        869,
+        3,
+        4
+      ],
+      [
+        0,
+        71,
+        0
+      ],
+      [
+        6,
+        0,
+        19
+      ]
+    ],
+    "classification_report": {
+      "negative": {
+        "precision": 0.9931428571428571,
+        "recall": 0.9920091324200914,
+        "f1-score": 0.9925756710451171,
+        "support": 876.0
+      },
+      "hypothyroid": {
+        "precision": 0.9594594594594594,
+        "recall": 1.0,
+        "f1-score": 0.9793103448275862,
+        "support": 71.0
+      },
+      "hyperthyroid": {
+        "precision": 0.8260869565217391,
+        "recall": 0.76,
+        "f1-score": 0.7916666666666666,
+        "support": 25.0
+      },
+      "accuracy": 0.9866255144032922,
+      "macro avg": {
+        "precision": 0.9262297577080186,
+        "recall": 0.9173363774733637,
+        "f1-score": 0.9211842275131232,
+        "support": 972.0
+      },
+      "weighted avg": {
+        "precision": 0.9863857390862223,
+        "recall": 0.9866255144032922,
+        "f1-score": 0.9864392890791644,
+        "support": 972.0
+      }
+    }
+  },
+  "overlap_free_test": {
+    "records": 972,
+    "class_counts": {
+      "negative": 876,
+      "hypothyroid": 71,
+      "hyperthyroid": 25
+    },
+    "accuracy": 0.9866255144032922,
+    "balanced_accuracy": 0.9173363774733638,
+    "macro_f1": 0.9211842275131232,
+    "labels": [
+      "negative",
+      "hypothyroid",
+      "hyperthyroid"
+    ],
+    "confusion_matrix": [
+      [
+        869,
+        3,
+        4
+      ],
+      [
+        0,
+        71,
+        0
+      ],
+      [
+        6,
+        0,
+        19
+      ]
+    ],
+    "classification_report": {
+      "negative": {
+        "precision": 0.9931428571428571,
+        "recall": 0.9920091324200914,
+        "f1-score": 0.9925756710451171,
+        "support": 876.0
+      },
+      "hypothyroid": {
+        "precision": 0.9594594594594594,
+        "recall": 1.0,
+        "f1-score": 0.9793103448275862,
+        "support": 71.0
+      },
+      "hyperthyroid": {
+        "precision": 0.8260869565217391,
+        "recall": 0.76,
+        "f1-score": 0.7916666666666666,
+        "support": 25.0
+      },
+      "accuracy": 0.9866255144032922,
+      "macro avg": {
+        "precision": 0.9262297577080186,
+        "recall": 0.9173363774733637,
+        "f1-score": 0.9211842275131232,
+        "support": 972.0
+      },
+      "weighted avg": {
+        "precision": 0.9863857390862223,
+        "recall": 0.9866255144032922,
+        "f1-score": 0.9864392890791644,
+        "support": 972.0
+      }
+    }
+  },
+  "limitations": [
+    "Historical research dataset; not clinically validated",
+    "Negative label is not proof of normal thyroid function",
+    "Overlap-free test excludes exact feature matches, not all possible patient-level leakage",
+    "No independent external cohort",
+    "Clinical input units and feature definitions must be verified before patient-facing inference"
+  ]
+}
