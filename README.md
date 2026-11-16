@@ -1,4 +1,5 @@
-Open  http://localhost:8506 if the browser does not open automatically.
+## https://thyroguard.streamlit.app/
+Here is the app deployed on streamlit!
 
 ## ThyroGuard
 
