@@ -4,9 +4,9 @@ from utils.patient_context import patient_sidebar
 
 
 def render_sidebar():
-
     with st.sidebar:
 
+        # APP HEADER
         st.markdown("## 🩺 ThyroGuard")
         st.caption("AI-POWERED THYROID HEALTH")
 
@@ -18,43 +18,36 @@ def render_sidebar():
         st.page_link(
             "app.py",
             label="Overview",
-            icon="🏠",
         )
 
         st.page_link(
             "pages/ThyroAI.py",
             label="ThyroAI",
-            icon="🧠",
         )
 
         st.page_link(
             "pages/0_Patient_Management.py",
             label="Patient Management",
-            icon="👤",
         )
 
         st.page_link(
             "pages/1_ThyroidTrend.py",
             label="ThyroidTrend",
-            icon="📈",
         )
 
         st.page_link(
             "pages/2_SymptomWatch.py",
             label="SymptomWatch",
-            icon="💗",
         )
 
         st.page_link(
             "pages/3_FollowUpGuard.py",
             label="FollowUpGuard",
-            icon="📅",
         )
 
         st.page_link(
             "pages/5_Reports.py",
             label="Reports",
-            icon="📋",
         )
 
         st.divider()
@@ -65,7 +58,6 @@ def render_sidebar():
         st.page_link(
             "pages/Model_Insights.py",
             label="Model Insights",
-            icon="📊",
         )
 
         st.divider()
@@ -75,6 +67,7 @@ def render_sidebar():
 
         st.divider()
 
+        # DISCLAIMER
         st.caption(
             "Educational research prototype. "
             "Use fictional sample data only. "
